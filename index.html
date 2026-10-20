@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123b35">
+<title>CKB Hotels — Find your stay</title>
+<style>
+:root{--green:#123b35;--mint:#eaf4ef;--gold:#f3b84b;--ink:#182522;--muted:#65736f;--line:#e1e9e5;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:#f7faf8}
+header{background:var(--green);color:#fff;padding:17px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:22px;font-weight:850;letter-spacing:.2px}.brand span{color:var(--gold)}.tag{font-size:12px;color:#d4e6de}
+.hero{padding:34px 5% 26px;background:linear-gradient(135deg,#123b35,#246458);color:#fff}
+.hero h1{font-size:clamp(28px,6vw,46px);line-height:1.12;margin:0 0 10px;max-width:700px}.hero p{margin:0 0 22px;color:#dcebe5}
+.search{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:10px;background:#fff;padding:12px;border-radius:15px;max-width:1000px;box-shadow:0 8px 24px #001a1225}
+label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:5px}input,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:12px;font:inherit;background:white;color:var(--ink)}
+button{border:0;border-radius:10px;padding:12px 17px;background:var(--gold);color:#2c281d;font-weight:800;font:inherit;cursor:pointer}button:hover{filter:brightness(.96)}
+main{padding:26px 5% 48px;max-width:1250px;margin:auto}.section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;flex-wrap:wrap}.section-head h2{margin:0 0 5px;font-size:25px}.muted{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
+.card{background:white;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 5px 16px #123b350a}
+.photo{height:170px;display:grid;place-items:center;background:linear-gradient(135deg,#d4e9de,#a6c8b7);font-size:52px}
+.card:nth-child(2) .photo{background:linear-gradient(135deg,#f5e5c8,#e7c58c)}.card:nth-child(3) .photo{background:linear-gradient(135deg,#dce7f7,#a9bddb)}
+.card-body{padding:16px}.row{display:flex;justify-content:space-between;gap:10px;align-items:start}.card h3{margin:0 0 5px;font-size:18px}.badge{font-size:11px;background:var(--mint);color:var(--green);padding:5px 8px;border-radius:99px;font-weight:800;white-space:nowrap}
+.price{font-size:22px;font-weight:850;margin:14px 0 10px}.price small{font-size:12px;font-weight:500;color:var(--muted)}.card button{width:100%;background:var(--green);color:white}
+.notice{background:#fff8e8;border:1px solid #f1dfb6;border-radius:12px;padding:13px 15px;margin-top:22px;font-size:13px;color:#62512d}
+footer{background:#102f2a;color:#dcebe5;padding:24px 5%;font-size:13px}.footer-inner{max-width:1150px;margin:auto;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.modal-backdrop{display:none;position:fixed;inset:0;background:#071c18a8;z-index:5;padding:16px;overflow:auto;align-items:center;justify-content:center}.modal{background:white;border-radius:16px;max-width:520px;width:100%;padding:22px;max-height:95vh;overflow:auto}.modal h2{margin-top:0}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}.modal-actions{display:flex;gap:10px;margin-top:16px}.secondary{background:#edf2ef}.success{display:none;margin-top:14px;background:#e7f7ed;padding:13px;border-radius:10px;color:#165a32;font-size:14px}
+@media(max-width:800px){.search{grid-template-columns:1fr 1fr}.search .search-button{grid-column:1/-1}.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){header{padding:15px 5%}.tag{display:none}.hero{padding-top:28px}.search{grid-template-columns:1fr}.search .search-button{grid-column:auto}.grid{grid-template-columns:1fr}.photo{height:155px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.section-head h2{font-size:22px}}
+</style>
+</head>
+<body>
+<header><div class="brand">CKB <span>Hotels</span></div><div class="tag">Find a stay. Travel with confidence.</div></header>
+<section class="hero">
+  <h1>আপনার পরের থাকার জায়গা খুঁজুন</h1>
+  <p>হোটেল খুঁজুন, ভাড়া দেখুন এবং বুকিংয়ের অনুরোধ পাঠান।</p>
+  <form class="search" id="searchForm">
+    <div><label for="destination">শহর বা এলাকা</label><input id="destination" placeholder="যেমন: কলকাতা" value="কলকাতা"></div>
+    <div><label for="checkin">চেক-ইন</label><input id="checkin" type="date" required></div>
+    <div><label for="checkout">চেক-আউট</label><input id="checkout" type="date" required></div>
+    <div class="search-button" style="display:flex;align-items:end"><button type="submit">হোটেল খুঁজুন</button></div>
+  </form>
+</section>
+<main>
+  <div class="section-head"><div><h2>জনপ্রিয় থাকার বিকল্প</h2><div class="muted" id="resultText">নমুনা হোটেল — বুকিং নিশ্চিত করার আগে হোটেলের সঙ্গে যাচাই করুন।</div></div><span class="badge">প্রাথমিক ডেমো</span></div>
+  <div class="grid" id="hotelGrid"></div>
+  <div class="notice"><strong>নোট:</strong> এটি CKB Hotels-এর প্রথম ডেমো সংস্করণ। এখানে দেখানো হোটেল ও দাম উদাহরণ হিসেবে দেওয়া—এগুলি বাস্তব হোটেলের তালিকা বা লাইভ রুম-উপলভ্যতা নয়। এই ডেমোতে বুকিং অনুরোধ আপনার এই ডিভাইসের ব্রাউজারে সংরক্ষিত হয়; হোটেলে পাঠানো হয় না।</div>
+</main>
+<footer><div class="footer-inner"><div><strong>CKB Hotels</strong><br>হোটেল বুকিং প্ল্যাটফর্মের প্রাথমিক সংস্করণ</div><div>যোগাযোগ: এখানে আপনার ব্যবসার ইমেল/ফোন যোগ করুন</div><div>© <span id="year"></span> CKB Hotels</div></div></footer>
+
+<div class="modal-backdrop" id="bookingBackdrop" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+ <div class="modal">
+  <h2 id="bookingTitle">বুকিংয়ের অনুরোধ</h2>
+  <p class="muted" id="selectedHotel"></p>
+  <form id="bookingForm">
+   <div class="form-grid">
+    <div class="full"><label for="guestName">আপনার নাম</label><input id="guestName" required maxlength="80" placeholder="পুরো নাম"></div>
+    <div><label for="guestPhone">মোবাইল নম্বর</label><input id="guestPhone" required inputmode="tel" pattern="[0-9+\-\s]{8,16}" placeholder="ফোন নম্বর"></div>
+    <div><label for="guestCount">অতিথি</label><select id="guestCount"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select></div>
+    <div><label for="modalCheckin">চেক-ইন</label><input id="modalCheckin" type="date" required></div>
+    <div><label for="modalCheckout">চেক-আউট</label><input id="modalCheckout" type="date" required></div>
+    <div class="full"><label for="guestNote">অতিরিক্ত তথ্য (ঐচ্ছিক)</label><input id="guestNote" maxlength="250" placeholder="বিশেষ অনুরোধ"></div>
+   </div>
+   <div class="modal-actions"><button type="submit">অনুরোধ সংরক্ষণ</button><button type="button" class="secondary" id="closeModal">বন্ধ করুন</button></div>
+   <div class="success" id="successBox"></div>
+  </form>
+ </div>
+</div>
+<script>
+const hotels = [
+ {id:"demo-1",name:"কলকাতা কমফোর্ট ইন",area:"কলকাতা, পশ্চিমবঙ্গ",price:999,rating:"4.2",type:"বাজেট হোটেল",icon:"🏨"},
+ {id:"demo-2",name:"সিটি গার্ডেন স্টে",area:"সল্টলেক, কলকাতা",price:1299,rating:"4.4",type:"ফ্যামিলি স্টে",icon:"🏡"},
+ {id:"demo-3",name:"রিভারসাইড রেস্ট",area:"দক্ষিণ ২৪ পরগনা",price:799,rating:"4.0",type:"বাজেট স্টে",icon:"🌿"}
+];
+let chosenHotel = null;
+const grid = document.getElementById("hotelGrid");
+function renderHotels(list){
+ grid.innerHTML = "";
+ if(!list.length){grid.innerHTML='<p>এই ডেমোতে ওই এলাকার ফলাফল নেই। “কলকাতা” লিখে আবার চেষ্টা করুন।</p>';return;}
+ list.forEach(h=>{
+  const card=document.createElement("article");card.className="card";
+  card.innerHTML=`<div class="photo" aria-hidden="true">${h.icon}</div><div class="card-body"><div class="row"><div><h3>${h.name}</h3><div class="muted">${h.area}</div></div><span class="badge">★ ${h.rating}</span></div><div class="muted" style="margin-top:10px">${h.type}</div><div class="price">₹${h.price.toLocaleString("en-IN")} <small>/ রাত থেকে</small></div><button type="button" data-book="${h.id}">বুকিংয়ের অনুরোধ</button></div>`;
+  grid.appendChild(card);
+ });
+}
+function setDefaultDates(){
+ const today=new Date(); const tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);
+ const after=new Date(today);after.setDate(today.getDate()+2);
+ const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+ document.getElementById("checkin").value=fmt(tomorrow);document.getElementById("checkout").value=fmt(after);
+}
+function validDates(a,b){return !!a&&!!b&&b>a;}
+function openBooking(h){
+ chosenHotel=h;document.getElementById("selectedHotel").textContent=`${h.name} · ₹${h.price.toLocaleString("en-IN")} / রাত থেকে`;
+ document.getElementById("modalCheckin").value=document.getElementById("checkin").value;
+ document.getElementById("modalCheckout").value=document.getElementById("checkout").value;
+ document.getElementById("successBox").style.display="none";
+ document.getElementById("bookingBackdrop").style.display="flex";
+}
+grid.addEventListener("click",e=>{const id=e.target.dataset.book;if(id)openBooking(hotels.find(h=>h.id===id));});
+document.getElementById("closeModal").addEventListener("click",()=>document.getElementById("bookingBackdrop").style.display="none");
+document.getElementById("bookingBackdrop").addEventListener("click",e=>{if(e.target.id==="bookingBackdrop")e.currentTarget.style.display="none";});
+document.getElementById("searchForm").addEventListener("submit",e=>{
+ e.preventDefault();const a=document.getElementById("checkin").value,b=document.getElementById("checkout").value;
+ if(!validDates(a,b)){alert("চেক-আউটের তারিখ চেক-ইনের পরের দিন বা তার পরে নির্বাচন করুন।");return;}
+ const q=document.getElementById("destination").value.trim().toLowerCase();
+ const matches=hotels.filter(h=>(h.area+" "+h.name).toLowerCase().includes(q)||q.includes("কলকাতা")&&h.area.includes("কলকাতা")||q.includes("south 24")&&h.area.includes("২৪"));
+ renderHotels(matches);document.getElementById("resultText").textContent=`“${document.getElementById("destination").value}” এর জন্য ${matches.length}টি নমুনা ফলাফল`;
+});
+document.getElementById("bookingForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const ci=document.getElementById("modalCheckin").value,co=document.getElementById("modalCheckout").value;
+ if(!validDates(ci,co)){alert("চেক-আউটের তারিখ চেক-ইনের পরে হতে হবে।");return;}
+ const booking={reference:"CKB-"+Date.now().toString().slice(-8),hotel:chosenHotel.name,pricePerNight:chosenHotel.price,name:document.getElementById("guestName").value.trim(),phone:document.getElementById("guestPhone").value.trim(),guests:document.getElementById("guestCount").value,checkin:ci,checkout:co,note:document.getElementById("guestNote").value.trim(),status:"Demo request — not sent to hotel",createdAt:new Date().toISOString()};
+ const bookings=JSON.parse(localStorage.getItem("ckbDemoBookings")||"[]");bookings.push(booking);localStorage.setItem("ckbDemoBookings",JSON.stringify(bookings));
+ const box=document.getElementById("successBox");box.innerHTML=`ডেমো অনুরোধ সংরক্ষিত হয়েছে। রেফারেন্স: <strong>${booking.reference}</strong><br>এটি হোটেলে পাঠানো হয়নি। প্রকৃত বুকিং চালু করতে সার্ভার ও হোটেল সংযোগ লাগবে।`;box.style.display="block";
+});
+document.getElementById("year").textContent=new Date().getFullYear();
+setDefaultDates();renderHotels(hotels);
+</script>
+</body>
+</html>
